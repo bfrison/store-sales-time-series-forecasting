@@ -3,7 +3,7 @@ from os.path import join
 import pandas as pd
 
 
-def load_data_frame(data_path):
+def load_data_frame(data_path, file_name='train.csv'):
     df_oil = pd.read_csv(
         join(data_path, 'oil.csv'), index_col=0, parse_dates=['date']
     ).convert_dtypes()
@@ -67,7 +67,7 @@ def load_data_frame(data_path):
     # df_transactions = pd.read_csv(join(data_path, 'transactions.csv'), parse_dates=['date'])
 
     df_train = pd.read_csv(
-        join(data_path, 'train.csv'),
+        join(data_path, file_name),
         index_col=0,
         parse_dates=['date'],
         dtype={'family': 'category'},
