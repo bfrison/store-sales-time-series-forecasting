@@ -1,5 +1,7 @@
+from itertools import chain
 from os.path import join
 
+import numpy as np
 import pandas as pd
 
 
@@ -93,3 +95,18 @@ def load_data_frame(data_path, file_name='train.csv'):
     df_train.city = df_train.city.astype('category')
 
     return df_train
+
+
+def batch_generator(df, family, sequence_length, X_cols, y_col='sales'):
+    df_family = df.query(f'family == @family')
+    num_dates = df_family.date.nunique()
+    sequences_X = []
+    sequences_y = []
+    for i in df_family.store_nbr.unique():
+        df_store = df_family.query('store_nbr == @i')
+        for j in range(int(num_dates / sequence_length)):
+            index_range = slice(j * sequence_length, (j + 1) * sequence_length)
+            sequences_X.append(df_store[X_cols].iloc[index_range].astype('float'))
+            sequences_y.append(df_store[y_col].iloc[index_range].astype('float'))
+
+    return np.array(sequences_X), np.array(sequences_y)
