@@ -96,7 +96,7 @@ def load_data_frame(data_path, file_name='train.csv'):
     return df_train
 
 
-def batch_generator(df, family, sequence_length, X_cols, y_col='sales'):
+def sequences_generator(df, family, sequence_length, X_cols, y_col='sales'):
     df_family = df.query(f'family == @family')
     num_dates = df_family.date.nunique()
     sequences_X = []
