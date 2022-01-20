@@ -19,6 +19,7 @@ class Sales_RNN(nn.Module):
         r_out, hidden = self.rnn(x, hidden)
         r_out = self.flatten(r_out)
 
-        output = self.fc(r_out)
+        r_out = self.fc(r_out)
+        output = r_out.reshape(batch_size, -1)
 
         return output, hidden
