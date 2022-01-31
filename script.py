@@ -10,11 +10,10 @@ from torch.utils.data import DataLoader, TensorDataset
 from rnn import Sales_RNN
 from utils import load_data_frame, sequences_generator
 
+X_cols = ['National_Holiday', 'National_Event']
 
 def get_data():
     df = load_data_frame('var')
-
-    X_cols = ['National_Holiday', 'National_Event']
 
     sequences_X, sequences_y = sequences_generator(df, 'AUTOMOTIVE', 10, X_cols)
 
@@ -27,18 +26,24 @@ def get_data():
 
 def train(model, train_dataloader, epochs, criterion, optimizer, print_every=100):
     start = datetime.now()
+    print(f'Training started at {start}')
 
-    for batch_X, batch_y in train_dataloader:
+    for epoch in range(epochs):
 
-        hidden = None
-        optimizer.zero_grad()
-        batch_y_log = np.log(batch_y + 1)
-        prediction, hidden = model(batch_X, hidden)
-        loss = criterion(prediction, batch_y_log)
-        loss.backward()
-        optimizer.step()
+        for batch_X, batch_y in train_dataloader:
 
-        return model
+            hidden = None
+            optimizer.zero_grad()
+            batch_y_log = np.log(batch_y + 1)
+            prediction, hidden = model(batch_X, hidden)
+            loss = criterion(prediction, batch_y_log)
+            loss.backward()
+            optimizer.step()
+        print(f'Epoch {epoch+1:2d}/{epochs:d} completion time: {datetime.now() - start}')
+
+    print(f'Training completion time: {datetime.now() - start}')
+
+    return model
 
 
 def test_training_function():
@@ -48,7 +53,9 @@ def test_training_function():
         torch.from_numpy(train_y[:128].astype('float32')),
     )
     train_loader = DataLoader(train_dataset, shuffle=True, batch_size=16)
-    model = Sales_RNN(2, 8, 3)
+    model = Sales_RNN(len(X_cols), 8, 3)
     criterion = nn.MSELoss()
     optimizer = Adam(model.parameters(), lr=0.01)
     model = train(model, train_loader, 2, criterion, optimizer)
+
+    return model
