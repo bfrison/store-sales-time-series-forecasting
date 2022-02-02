@@ -1,0 +1,78 @@
+dummy_cols:
+  - city
+  - state
+  - type
+  - cluster
+
+x_cols:
+  - onpromotion
+  - dcoilwtico
+  - National_Additional
+  - National_Bridge
+  - National_Event
+  - National_Holiday
+  - National_Transfer
+  - Regional_Holiday
+  - Local_Additional
+  - Local_Holiday
+  - Local_Transfer
+  - city_Ambato
+  - city_Babahoyo
+  - city_Cayambe
+  - city_Cuenca
+  - city_Daule
+  - city_El Carmen
+  - city_Esmeraldas
+  - city_Guaranda
+  - city_Guayaquil
+  - city_Ibarra
+  - city_Latacunga
+  - city_Libertad
+  - city_Loja
+  - city_Machala
+  - city_Manta
+  - city_Playas
+  - city_Puyo
+  - city_Quevedo
+  - city_Quito
+  - city_Riobamba
+  - city_Salinas
+  - city_Santo Domingo
+  - state_Azuay
+  - state_Bolivar
+  - state_Chimborazo
+  - state_Cotopaxi
+  - state_El Oro
+  - state_Esmeraldas
+  - state_Guayas
+  - state_Imbabura
+  - state_Loja
+  - state_Los Rios
+  - state_Manabi
+  - state_Pastaza
+  - state_Pichincha
+  - state_Santa Elena
+  - state_Santo Domingo de los Tsachilas
+  - state_Tungurahua
+  - type_A
+  - type_B
+  - type_C
+  - type_D
+  - type_E
+  - cluster_1
+  - cluster_10
+  - cluster_11
+  - cluster_12
+  - cluster_13
+  - cluster_14
+  - cluster_15
+  - cluster_16
+  - cluster_17
+  - cluster_2
+  - cluster_3
+  - cluster_4
+  - cluster_5
+  - cluster_6
+  - cluster_7
+  - cluster_8
+  - cluster_9

@@ -109,3 +109,11 @@ def sequences_generator(df, family, sequence_length, X_cols, y_col='sales'):
             sequences_y.append(df_store[y_col].iloc[index_range].astype('float'))
 
     return np.array(sequences_X), np.array(sequences_y)
+
+
+def convert_dummies(df, cols):
+    df_dummies_list = []
+    for col in cols:
+        df_dummies_list.append(pd.get_dummies(df[col], prefix=col).convert_dtypes())
+
+    return pd.concat([df.drop(columns=cols)] + df_dummies_list, axis=1)
