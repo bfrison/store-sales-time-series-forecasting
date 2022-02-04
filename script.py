@@ -19,11 +19,15 @@ dummy_cols = config['dummy_cols']
 
 
 def get_data():
+    print(f'{datetime.now()} loading dataframe')
     df = load_data_frame('var')
+    print(f'{datetime.now()} converting dummies')
     df = convert_dummies(df, dummy_cols)
 
+    print(f'{datetime.now()} generating sequences')
     sequences_X, sequences_y = sequences_generator(df, 'AUTOMOTIVE', 10, X_cols)
 
+    print(f'{datetime.now()} train test split')
     train_X, val_X, train_y, val_y = train_test_split(
         sequences_X, sequences_y, test_size=0.2, random_state=0
     )
@@ -34,25 +38,26 @@ def get_data():
 def train(
     model,
     train_dataloader,
+    validation_dataloader,
     epochs,
     criterion,
     optimizer,
-    print_every=100,
+    print_every=1000,
     device='cuda',
 ):
     start = datetime.now()
     print(f'Training started at {start}')
 
-    model.train()
-
     for epoch in range(epochs):
 
+        model.train()
+
         for index, (batch_X, batch_y) in enumerate(train_dataloader):
+            batch_X, batch_y = batch_X.to(device), batch_y.to(device)
             hidden = None
             optimizer.zero_grad()
 
-            batch_y_log = np.log(batch_y + 1)
-            batch_X, batch_y_log = batch_X.to(device), batch_y_log.to(device)
+            batch_y_log = torch.log(batch_y + 1)
 
             prediction, hidden = model(batch_X, hidden)
             loss = criterion(prediction, batch_y_log)
@@ -64,9 +69,27 @@ def train(
                     f'\t{index + 1} batches completed, time elapsed: {datetime.now() - start}'
                 )
 
+        model.eval()
+
+        cumulative_loss = 0
+        denominator = 0
+        for batch_X, batch_y in validation_dataloader:
+            batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+            hidden = None
+            denominator += len(batch_y)
+
+            batch_y_log = torch.log(batch_y + 1)
+
+            prediction, hidden = model(batch_X, hidden)
+            loss = criterion(prediction, batch_y_log)
+
+            cumulative_loss += loss.item() * len(batch_y)
+
         print(
-            f'Epoch {epoch+1:2d}/{epochs:d} completion time: {datetime.now() - start}'
+            f'Epoch {epoch+1:2d}/{epochs:d} completion time: {datetime.now() - start}',
+            end='\t',
         )
+        print(f'Validation MSE: {cumulative_loss / denominator}')
 
     print(f'Training completion time: {datetime.now() - start}')
 
@@ -79,12 +102,29 @@ def test_training_function():
         torch.from_numpy(train_X.astype('float32')),
         torch.from_numpy(train_y.astype('float32')),
     )
+    validation_dataset = TensorDataset(
+        torch.from_numpy(val_X.astype('float32')),
+        torch.from_numpy(val_y.astype('float32')),
+    )
+    # print(f'Dataset length: {len(train_dataset):d}')
     train_loader = DataLoader(train_dataset, shuffle=True, batch_size=16)
-    model = Sales_RNN(len(X_cols), 8, 3)
+    validation_loader = DataLoader(validation_dataset, shuffle=True, batch_size=16)
+    hidden_dimensions = 128
+    n_layers = 3
+    model = Sales_RNN(len(X_cols), hidden_dimensions, n_layers)
     device = 'cuda'
     model.to(device)
     criterion = nn.MSELoss()
     optimizer = Adam(model.parameters(), lr=0.01)
-    model = train(model, train_loader, 2, criterion, optimizer, device=device)
+    num_epochs = 20
+    model = train(
+        model,
+        train_loader,
+        validation_loader,
+        num_epochs,
+        criterion,
+        optimizer,
+        device=device,
+    )
 
     return model
