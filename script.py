@@ -98,6 +98,7 @@ def train(
 
 def test_training_function():
     train_X, val_X, train_y, val_y = get_data()
+    batch_size = 16
     train_dataset = TensorDataset(
         torch.from_numpy(train_X.astype('float32')),
         torch.from_numpy(train_y.astype('float32')),
@@ -107,10 +108,14 @@ def test_training_function():
         torch.from_numpy(val_y.astype('float32')),
     )
     # print(f'Dataset length: {len(train_dataset):d}')
-    train_loader = DataLoader(train_dataset, shuffle=True, batch_size=16)
-    validation_loader = DataLoader(validation_dataset, shuffle=True, batch_size=16)
+    train_loader = DataLoader(
+        train_dataset, shuffle=True, batch_size=batch_size, drop_last=True
+    )
+    validation_loader = DataLoader(
+        validation_dataset, shuffle=True, batch_size=batch_size, drop_last=True
+    )
     hidden_dimensions = 128
-    n_layers = 3
+    n_layers = 2
     model = Sales_RNN(len(X_cols), hidden_dimensions, n_layers)
     device = 'cuda'
     model.to(device)
@@ -128,3 +133,7 @@ def test_training_function():
     )
 
     return model
+
+
+if __name__ == '__main__':
+    test_training_function()
