@@ -96,24 +96,37 @@ def load_data_frame(data_path, file_name='train.csv'):
     return df_train
 
 
-def sequences_generator(df, family, sequence_length, X_cols, y_col='sales'):
-    df_family = df.query(f'family == @family')
-    num_dates = df_family.date.nunique()
+def sequences_generator(df, sequence_length, X_cols, y_col='sales'):
+    num_dates = df.date.nunique()
     sequences_X = []
     sequences_y = []
-    for i in df_family.store_nbr.unique():
-        df_store = df_family.query('store_nbr == @i')
-        for j in range(int(num_dates / sequence_length)):
-            index_range = slice(j * sequence_length, (j + 1) * sequence_length)
-            sequences_X.append(df_store[X_cols].iloc[index_range].astype('float'))
-            sequences_y.append(df_store[y_col].iloc[index_range].astype('float'))
+    for family in df.family.unique():
+        df_family = df.query(f'family == @family')
+        for i in df_family.store_nbr.unique():
+            df_store = df_family.query('store_nbr == @i')
+            for j in range(int(num_dates / sequence_length)):
+                index_range = slice(j * sequence_length, (j + 1) * sequence_length)
+                sequences_X.append(df_store[X_cols].iloc[index_range].astype('float'))
+                sequences_y.append(df_store[y_col].iloc[index_range].astype('float'))
 
     return np.array(sequences_X), np.array(sequences_y)
 
 
-def convert_dummies(df, cols):
+def convert_dummies(df, cols, reattach_family=True):
     df_dummies_list = []
     for col in cols:
         df_dummies_list.append(pd.get_dummies(df[col], prefix=col).convert_dtypes())
 
-    return pd.concat([df.drop(columns=cols)] + df_dummies_list, axis=1)
+    if reattach_family:
+        family = df.family
+
+        return pd.concat([df.drop(columns=cols)] + [family] + df_dummies_list, axis=1)
+    else:
+
+        return pd.concat([df.drop(columns=cols)] + df_dummies_list, axis=1)
+
+
+def add_day_of_week(df, col_name='date'):
+    df['weekday'] = df[col_name].dt.day_name()
+
+    return df

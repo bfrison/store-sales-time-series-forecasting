@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import numpy as np
+import pandas as pd
 import torch
 import yaml
 from sklearn.model_selection import train_test_split
@@ -9,7 +10,7 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader, TensorDataset
 
 from rnn import Sales_RNN
-from utils import convert_dummies, load_data_frame, sequences_generator
+from utils import add_day_of_week, convert_dummies, load_data_frame, sequences_generator
 
 with open('config.yml') as f:
     config = yaml.safe_load(f)
@@ -21,11 +22,13 @@ dummy_cols = config['dummy_cols']
 def get_data():
     print(f'{datetime.now()} loading dataframe')
     df = load_data_frame('var')
+    df = add_day_of_week(df)
+
     print(f'{datetime.now()} converting dummies')
     df = convert_dummies(df, dummy_cols)
 
     print(f'{datetime.now()} generating sequences')
-    sequences_X, sequences_y = sequences_generator(df, 'AUTOMOTIVE', 10, X_cols)
+    sequences_X, sequences_y = sequences_generator(df, 1684, X_cols)
 
     print(f'{datetime.now()} train test split')
     train_X, val_X, train_y, val_y = train_test_split(
@@ -108,11 +111,9 @@ def test_training_function():
         torch.from_numpy(val_y.astype('float32')),
     )
     # print(f'Dataset length: {len(train_dataset):d}')
-    train_loader = DataLoader(
-        train_dataset, shuffle=True, batch_size=batch_size, drop_last=True
-    )
+    train_loader = DataLoader(train_dataset, shuffle=True, batch_size=batch_size)
     validation_loader = DataLoader(
-        validation_dataset, shuffle=True, batch_size=batch_size, drop_last=True
+        validation_dataset, shuffle=True, batch_size=batch_size
     )
     hidden_dimensions = 128
     n_layers = 2

@@ -3,6 +3,8 @@ dummy_cols:
   - state
   - type
   - cluster
+  - family
+  - weekday
 
 x_cols:
   - onpromotion
@@ -76,3 +78,43 @@ x_cols:
   - cluster_7
   - cluster_8
   - cluster_9
+  - family_AUTOMOTIVE
+  - family_BABY CARE
+  - family_BEAUTY
+  - family_BEVERAGES
+  - family_BOOKS
+  - family_BREAD/BAKERY
+  - family_CELEBRATION
+  - family_CLEANING
+  - family_DAIRY
+  - family_DELI
+  - family_EGGS
+  - family_FROZEN FOODS
+  - family_GROCERY I
+  - family_GROCERY II
+  - family_HARDWARE
+  - family_HOME AND KITCHEN I
+  - family_HOME AND KITCHEN II
+  - family_HOME APPLIANCES
+  - family_HOME CARE
+  - family_LADIESWEAR
+  - family_LAWN AND GARDEN
+  - family_LINGERIE
+  - family_LIQUOR,WINE,BEER
+  - family_MAGAZINES
+  - family_MEATS
+  - family_PERSONAL CARE
+  - family_PET SUPPLIES
+  - family_PLAYERS AND ELECTRONICS
+  - family_POULTRY
+  - family_PREPARED FOODS
+  - family_PRODUCE
+  - family_SCHOOL AND OFFICE SUPPLIES
+  - family_SEAFOOD
+  - weekday_Friday
+  - weekday_Monday
+  - weekday_Saturday
+  - weekday_Sunday
+  - weekday_Thursday
+  - weekday_Tuesday
+  - weekday_Wednesday
