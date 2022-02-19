@@ -130,3 +130,9 @@ def add_day_of_week(df, col_name='date'):
     df['weekday'] = df[col_name].dt.day_name()
 
     return df
+
+
+def add_quarter(df, col_name='date'):
+    df['quarter'] = df[col_name].dt.quarter
+
+    return df

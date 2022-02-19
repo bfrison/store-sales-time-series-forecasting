@@ -10,7 +10,7 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader, TensorDataset
 
 from rnn import Sales_RNN
-from utils import add_day_of_week, convert_dummies, load_data_frame, sequences_generator
+from utils import add_day_of_week, add_quarter, convert_dummies, load_data_frame, sequences_generator
 
 with open('config.yml') as f:
     config = yaml.safe_load(f)
@@ -23,6 +23,7 @@ def get_data():
     print(f'{datetime.now()} loading dataframe')
     df = load_data_frame('var')
     df = add_day_of_week(df)
+    df = add_quarter(df)
 
     print(f'{datetime.now()} converting dummies')
     df = convert_dummies(df, dummy_cols)
@@ -115,14 +116,14 @@ def test_training_function():
     validation_loader = DataLoader(
         validation_dataset, shuffle=True, batch_size=batch_size
     )
-    hidden_dimensions = 128
-    n_layers = 2
+    hidden_dimensions = 64
+    n_layers = 3
     model = Sales_RNN(len(X_cols), hidden_dimensions, n_layers)
     device = 'cuda'
     model.to(device)
     criterion = nn.MSELoss()
-    optimizer = Adam(model.parameters(), lr=0.01)
-    num_epochs = 20
+    optimizer = Adam(model.parameters(), lr=0.001)
+    num_epochs = 50
     model = train(
         model,
         train_loader,
