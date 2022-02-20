@@ -96,7 +96,7 @@ def load_data_frame(data_path, file_name='train.csv'):
     return df_train
 
 
-def sequences_generator(df, sequence_length, X_cols, y_col='sales'):
+def sequences_generator(df, sequence_length, X_cols, y_col=None):
     num_dates = df.date.nunique()
     sequences_X = []
     sequences_y = []
@@ -107,7 +107,12 @@ def sequences_generator(df, sequence_length, X_cols, y_col='sales'):
             for j in range(int(num_dates / sequence_length)):
                 index_range = slice(j * sequence_length, (j + 1) * sequence_length)
                 sequences_X.append(df_store[X_cols].iloc[index_range].astype('float'))
-                sequences_y.append(df_store[y_col].iloc[index_range].astype('float'))
+                if y_col:
+                    sequences_y.append(
+                        df_store[y_col].iloc[index_range].astype('float')
+                    )
+                else:
+                    sequences_y.append(df_store.iloc[index_range].index.astype('int'))
 
     return np.array(sequences_X), np.array(sequences_y)
 
@@ -133,6 +138,7 @@ def add_day_of_week(df, col_name='date'):
 
 
 def add_quarter(df, col_name='date'):
-    df['quarter'] = df[col_name].dt.quarter
+    df['quarter'] = df[col_name].dt.quarter.astype('category')
+    df['quarter'].cat.set_categories([1, 2, 3, 4], inplace=True)
 
     return df

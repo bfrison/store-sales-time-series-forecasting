@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import numpy as np
@@ -10,7 +11,13 @@ from torch.optim import Adam
 from torch.utils.data import DataLoader, TensorDataset
 
 from rnn import Sales_RNN
-from utils import add_day_of_week, add_quarter, convert_dummies, load_data_frame, sequences_generator
+from utils import (
+    add_day_of_week,
+    add_quarter,
+    convert_dummies,
+    load_data_frame,
+    sequences_generator,
+)
 
 with open('config.yml') as f:
     config = yaml.safe_load(f)
@@ -25,7 +32,7 @@ lr = config['training_hyperparameters']['lr']
 
 
 def get_data():
-    print(f'{datetime.now()} loading dataframe')
+    print(f'{datetime.now()} loading training dataframe')
     df = load_data_frame('var')
     df = add_day_of_week(df)
     df = add_quarter(df)
@@ -34,9 +41,9 @@ def get_data():
     df = convert_dummies(df, dummy_cols)
 
     print(f'{datetime.now()} generating sequences')
-    sequences_X, sequences_y = sequences_generator(df, 1684, X_cols)
+    sequences_X, sequences_y = sequences_generator(df, 1684, X_cols, 'sales')
 
-    print(f'{datetime.now()} train test split')
+    print(f'{datetime.now()} train val split')
     train_X, val_X, train_y, val_y = train_test_split(
         sequences_X, sequences_y, test_size=0.2, random_state=0
     )
@@ -103,7 +110,7 @@ def train(
         print(f'Validation MSE: {mse}')
         if mse < min_mse:
             min_mse = mse
-            # torch.save(model.state_dict(), 'model.pkl')
+            torch.save(model.state_dict(), os.path.join('var', 'model.pkl'))
             print('Saved model artifacts')
 
     print(f'Training completion time: {datetime.now() - start}')
@@ -146,7 +153,7 @@ def test_training_function():
 
 
 def get_test_data():
-    print(f'{datetime.now()} loading dataframe')
+    print(f'{datetime.now()} loading test dataframe')
     df = load_data_frame('var', 'test.csv')
     df = add_day_of_week(df)
     df = add_quarter(df)
@@ -155,18 +162,33 @@ def get_test_data():
     df = convert_dummies(df, dummy_cols)
 
     print(f'{datetime.now()} generating sequences')
-    sequences_X, sequences_y = sequences_generator(df, 16, X_cols)
+    sequences_X, sequences_index = sequences_generator(df, 16, X_cols)
 
-    return df
+    return sequences_X, sequences_index
 
 
-# def test_model(model):
-    
+def test_model(model, sequences_X, sequences_index):
+    model.eval()
+    sequences_y_log, hidden = model(
+        torch.from_numpy(sequences_X.astype('float32')), None
+    )
+    sequences_y = np.exp(sequences_y_log.detach().numpy()) - 1
+    index = sequences_index.reshape(-1)
+    preds = (
+        pd.Series(sequences_y.reshape(-1))
+        .set_axis(index)
+        .sort_index()
+        .rename('sales')
+        .rename_axis('id')
+    )
+    return preds
 
 
 if __name__ == '__main__':
-    # test_training_function()
+    test_training_function()
     model = Sales_RNN(len(X_cols), hidden_dimensions, n_layers)
-    state_dict = torch.load('model.pkl')
+    state_dict = torch.load(os.path.join('var', 'model.pkl'))
     model.load_state_dict(state_dict)
-    print(model)
+    sequences_X, sequences_index = get_test_data()
+    preds = test_model(model, sequences_X, sequences_index)
+    preds.to_csv('submission.csv')
