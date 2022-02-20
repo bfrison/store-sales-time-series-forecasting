@@ -17,6 +17,11 @@ with open('config.yml') as f:
 
 X_cols = config['x_cols']
 dummy_cols = config['dummy_cols']
+hidden_dimensions = config['network_hyperparameters']['hidden_dimensions']
+n_layers = config['network_hyperparameters']['n_layers']
+batch_size = config['training_hyperparameters']['batch_size']
+num_epochs = config['training_hyperparameters']['num_epochs']
+lr = config['training_hyperparameters']['lr']
 
 
 def get_data():
@@ -109,7 +114,6 @@ def train(
 
 def test_training_function():
     train_X, val_X, train_y, val_y = get_data()
-    batch_size = 16
     train_dataset = TensorDataset(
         torch.from_numpy(train_X.astype('float32')),
         torch.from_numpy(train_y.astype('float32')),
@@ -123,14 +127,11 @@ def test_training_function():
     validation_loader = DataLoader(
         validation_dataset, shuffle=True, batch_size=batch_size
     )
-    hidden_dimensions = 64
-    n_layers = 3
     model = Sales_RNN(len(X_cols), hidden_dimensions, n_layers)
     device = 'cuda'
     model.to(device)
     criterion = nn.MSELoss()
-    optimizer = Adam(model.parameters(), lr=0.001)
-    num_epochs = 50
+    optimizer = Adam(model.parameters(), lr=lr)
     model = train(
         model,
         train_loader,

@@ -1,3 +1,12 @@
+network_hyperparameters:
+  hidden_dimensions: 64
+  n_layers: 3
+
+training_hyperparameters:
+  batch_size: 16
+  num_epochs: 50
+  lr: 0.001
+
 dummy_cols:
   - type
   - cluster
