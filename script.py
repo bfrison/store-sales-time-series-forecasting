@@ -103,7 +103,7 @@ def train(
         print(f'Validation MSE: {mse}')
         if mse < min_mse:
             min_mse = mse
-            torch.save(model.state_dict(), 'model.pkl')
+            # torch.save(model.state_dict(), 'model.pkl')
             print('Saved model artifacts')
 
     print(f'Training completion time: {datetime.now() - start}')
@@ -145,5 +145,28 @@ def test_training_function():
     return model
 
 
+def get_test_data():
+    print(f'{datetime.now()} loading dataframe')
+    df = load_data_frame('var', 'test.csv')
+    df = add_day_of_week(df)
+    df = add_quarter(df)
+
+    print(f'{datetime.now()} converting dummies')
+    df = convert_dummies(df, dummy_cols)
+
+    print(f'{datetime.now()} generating sequences')
+    sequences_X, sequences_y = sequences_generator(df, 16, X_cols)
+
+    return df
+
+
+# def test_model(model):
+    
+
+
 if __name__ == '__main__':
-    test_training_function()
+    # test_training_function()
+    model = Sales_RNN(len(X_cols), hidden_dimensions, n_layers)
+    state_dict = torch.load('model.pkl')
+    model.load_state_dict(state_dict)
+    print(model)
