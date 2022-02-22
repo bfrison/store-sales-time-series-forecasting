@@ -1,0 +1,13 @@
+{
+  "id": "bfrison/store-sales-time-series-forecasting",
+  "title": "store-sales-time-series-forecasting",
+  "code_file": "script.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": "true",
+  "enable_gpu": "true",
+  "enable_internet": "true",
+  "dataset_sources": ["bfrison/store-sales-time-series-forecasting-utils"],
+  "competition_sources": ["store-sales-time-series-forecasting"],
+  "kernel_sources": []
+}

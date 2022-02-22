@@ -1,4 +1,5 @@
 import os
+import sys
 from datetime import datetime
 
 import numpy as np
@@ -10,6 +11,11 @@ from torch import nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader, TensorDataset
 
+utils_dir = '/kaggle/input/store-sales-time-series-forecasting-utils'
+dataset_dir = '/kaggle/input/store-sales-time-series-forecasting'
+
+sys.path.append(utils_dir)
+
 from rnn import Sales_RNN
 from utils import (
     add_day_of_week,
@@ -19,7 +25,7 @@ from utils import (
     sequences_generator,
 )
 
-with open('config.yml') as f:
+with open(os.path.join(utils_dir, 'config.yml')) as f:
     config = yaml.safe_load(f)
 
 X_cols = config['x_cols']
@@ -30,10 +36,9 @@ batch_size = config['training_hyperparameters']['batch_size']
 num_epochs = config['training_hyperparameters']['num_epochs']
 lr = config['training_hyperparameters']['lr']
 
-
 def get_data():
     print(f'{datetime.now()} loading training dataframe')
-    df = load_data_frame('var')
+    df = load_data_frame(dataset_dir)
     df = add_day_of_week(df)
     df = add_quarter(df)
 
