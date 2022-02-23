@@ -2,6 +2,13 @@ import os
 import sys
 from datetime import datetime
 
+utils_dir = '/kaggle/input/store-sales-time-series-forecasting-utils'
+dataset_dir = '/kaggle/input/store-sales-time-series-forecasting'
+
+from conda.cli import main
+
+main('conda', 'install', '-y', '--file', os.path.join(utils_dir, 'requirements.txt'), '-c', 'conda-forge')
+
 import numpy as np
 import pandas as pd
 import torch
@@ -10,9 +17,6 @@ from sklearn.model_selection import train_test_split
 from torch import nn
 from torch.optim import Adam
 from torch.utils.data import DataLoader, TensorDataset
-
-utils_dir = '/kaggle/input/store-sales-time-series-forecasting-utils'
-dataset_dir = '/kaggle/input/store-sales-time-series-forecasting'
 
 sys.path.append(utils_dir)
 
