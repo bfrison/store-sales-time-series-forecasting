@@ -7,6 +7,8 @@ dataset_dir = '/kaggle/input/store-sales-time-series-forecasting'
 
 from conda.cli import main
 
+main('conda', 'env', 'create', '-n', 'store_env')
+main('conda', 'activate', 'store_env')
 main('conda', 'install', '-y', '--file', os.path.join(utils_dir, 'requirements.txt'), '-c', 'conda-forge')
 
 import numpy as np
@@ -201,3 +203,4 @@ if __name__ == '__main__':
     sequences_X, sequences_index = get_test_data()
     preds = test_model(model, sequences_X, sequences_index)
     preds.to_csv('submission.csv')
+    main('conda', 'deactivate')
