@@ -23,7 +23,8 @@ def load_data_frame(data_path, file_name='train.csv'):
     df_national_holidays = (
         pd.get_dummies(
             df_holiday_events.query(
-                'locale == "National" and not transferred and type != "Work Day"'
+                'locale == "National" and not transferred and type != "Work Day"',
+                engine='python'
             )[['date', 'type']],
             prefix='National',
             columns=['type'],
@@ -34,7 +35,7 @@ def load_data_frame(data_path, file_name='train.csv'):
     ).convert_dtypes()
 
     df_regional_holidays = (
-        df_holiday_events.query('locale == "Regional"')
+        df_holiday_events.query('locale == "Regional"', engine='python')
         .groupby(['date', 'locale_name'])
         .description.count()
         .rename('Regional_Holiday')
@@ -44,7 +45,7 @@ def load_data_frame(data_path, file_name='train.csv'):
 
     df_local_holidays = (
         pd.get_dummies(
-            df_holiday_events.query('locale == "Local" and not transferred')[
+            df_holiday_events.query('locale == "Local" and not transferred', engine='python')[
                 ['date', 'locale_name', 'type']
             ],
             prefix='Local',
@@ -101,9 +102,9 @@ def sequences_generator(df, sequence_length, X_cols, y_col=None):
     sequences_X = []
     sequences_y = []
     for family in df.family.unique():
-        df_family = df.query(f'family == @family')
+        df_family = df.query(f'family == @family', engine='python')
         for i in df_family.store_nbr.unique():
-            df_store = df_family.query('store_nbr == @i')
+            df_store = df_family.query('store_nbr == @i', engine='python')
             for j in range(int(num_dates / sequence_length)):
                 index_range = slice(j * sequence_length, (j + 1) * sequence_length)
                 sequences_X.append(df_store[X_cols].iloc[index_range].astype('float'))

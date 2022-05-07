@@ -7,9 +7,7 @@ dataset_dir = '/kaggle/input/store-sales-time-series-forecasting'
 
 from conda.cli import main
 
-main('conda', 'env', 'create', '-n', 'store_env')
-main('conda', 'activate', 'store_env')
-main('conda', 'install', '-y', '--file', os.path.join(utils_dir, 'requirements.txt'), '-c', 'conda-forge')
+main('conda', 'install', '-y',  'pandas=1.3.5', '-c', 'conda-forge')
 
 import numpy as np
 import pandas as pd
@@ -121,6 +119,8 @@ def train(
         print(f'Validation MSE: {mse}')
         if mse < min_mse:
             min_mse = mse
+            if not os.path.exists('var'):
+                os.mkdir('var')
             torch.save(model.state_dict(), os.path.join('var', 'model.pkl'))
             print('Saved model artifacts')
 
@@ -165,7 +165,7 @@ def test_training_function():
 
 def get_test_data():
     print(f'{datetime.now()} loading test dataframe')
-    df = load_data_frame('var', 'test.csv')
+    df = load_data_frame(dataset_dir, 'test.csv')
     df = add_day_of_week(df)
     df = add_quarter(df)
 
@@ -203,4 +203,3 @@ if __name__ == '__main__':
     sequences_X, sequences_index = get_test_data()
     preds = test_model(model, sequences_X, sequences_index)
     preds.to_csv('submission.csv')
-    main('conda', 'deactivate')
