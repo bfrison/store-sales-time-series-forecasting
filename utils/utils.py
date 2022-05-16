@@ -2,6 +2,7 @@ from os.path import join
 
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import MinMaxScaler
 
 
 def load_data_frame(data_path, file_name='train.csv'):
@@ -16,6 +17,9 @@ def load_data_frame(data_path, file_name='train.csv'):
     df_oil.dcoilwtico.fillna(method='ffill', inplace=True)
     df_oil.dcoilwtico.fillna(method='bfill', inplace=True)
 
+    scaler = MinMaxScaler()
+    df_oil.dcoilwtico = scaler.fit_transform(df_oil).reshape(-1)
+
     df_holiday_events = pd.read_csv(
         join(data_path, 'holidays_events.csv'), parse_dates=['date']
     ).convert_dtypes()
@@ -24,7 +28,7 @@ def load_data_frame(data_path, file_name='train.csv'):
         pd.get_dummies(
             df_holiday_events.query(
                 'locale == "National" and not transferred and type != "Work Day"',
-                engine='python'
+                engine='python',
             )[['date', 'type']],
             prefix='National',
             columns=['type'],
@@ -45,9 +49,9 @@ def load_data_frame(data_path, file_name='train.csv'):
 
     df_local_holidays = (
         pd.get_dummies(
-            df_holiday_events.query('locale == "Local" and not transferred', engine='python')[
-                ['date', 'locale_name', 'type']
-            ],
+            df_holiday_events.query(
+                'locale == "Local" and not transferred', engine='python'
+            )[['date', 'locale_name', 'type']],
             prefix='Local',
             columns=['type'],
         )

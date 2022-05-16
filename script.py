@@ -40,6 +40,7 @@ batch_size = config['training_hyperparameters']['batch_size']
 num_epochs = config['training_hyperparameters']['num_epochs']
 lr = config['training_hyperparameters']['lr']
 
+
 def get_data():
     print(f'{datetime.now()} loading training dataframe')
     df = load_data_frame(dataset_dir)
