@@ -11,6 +11,8 @@ class Sales_RNN(nn.Module):
 
         self.rnn = nn.RNN(input_size, hidden_dim, n_layers, batch_first=True)
 
+        self.dropout = nn.Dropout(0.2)
+
         self.flatten = nn.Flatten(0, -2)
 
         self.fc = nn.Linear(hidden_dim, 1)
@@ -19,6 +21,7 @@ class Sales_RNN(nn.Module):
         batch_size = x.size(0)
 
         r_out, hidden = self.rnn(x, hidden)
+        r_out = self.dropout(r_out)
         r_out = self.flatten(r_out)
 
         r_out = self.fc(r_out)
