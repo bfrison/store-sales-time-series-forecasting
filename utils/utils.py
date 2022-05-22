@@ -136,14 +136,36 @@ def convert_dummies(df, cols, reattach_family=True):
         return pd.concat([df.drop(columns=cols)] + df_dummies_list, axis=1)
 
 
+def polar_to_rectangular(r, theta):
+    return r * (np.cos(theta), np.sin(theta))
+
+
 def add_day_of_week(df, col_name='date'):
-    df['weekday'] = df[col_name].dt.day_name()
+    weekday_x, weekday_y = polar_to_rectangular(
+        1, df[col_name].dt.day_of_week / 7 * 2 * np.pi
+    )
+    df['weekday_x'] = weekday_x
+    df['weekday_y'] = weekday_y
 
     return df
 
 
-def add_quarter(df, col_name='date'):
-    df['quarter'] = df[col_name].dt.quarter.astype('category')
-    df['quarter'].cat.set_categories([1, 2, 3, 4], inplace=True)
+def add_day_of_month(df, col_name='date'):
+    day_of_month_x, day_of_month_y = polar_to_rectangular(
+        1, df[col_name].dt.day / df[col_name].dt.days_in_month * 2 * np.pi
+    )
+    df['day_of_month_x'] = day_of_month_x
+    df['day_of_month_y'] = day_of_month_y
+
+    return df
+
+
+def add_day_of_year(df, col_name='date'):
+    day_of_year_x, day_of_year_y = polar_to_rectangular(
+        1,
+        df[col_name].dt.day_of_year / (365 + df[col_name].dt.is_leap_year) * 2 * np.pi,
+    )
+    df['day_of_year_x'] = day_of_year_x
+    df['day_of_year_y'] = day_of_year_y
 
     return df

@@ -23,7 +23,8 @@ sys.path.append(utils_dir)
 from rnn import Sales_RNN
 from utils import (
     add_day_of_week,
-    add_quarter,
+    add_day_of_month,
+    add_day_of_year,
     convert_dummies,
     load_data_frame,
     sequences_generator,
@@ -45,7 +46,8 @@ def get_data():
     print(f'{datetime.now()} loading training dataframe')
     df = load_data_frame(dataset_dir)
     df = add_day_of_week(df)
-    df = add_quarter(df)
+    df = add_day_of_month(df)
+    df = add_day_of_year(df)
 
     print(f'{datetime.now()} converting dummies')
     df = convert_dummies(df, dummy_cols)
@@ -168,7 +170,8 @@ def get_test_data():
     print(f'{datetime.now()} loading test dataframe')
     df = load_data_frame(dataset_dir, 'test.csv')
     df = add_day_of_week(df)
-    df = add_quarter(df)
+    df = add_day_of_month(df)
+    df = add_day_of_year(df)
 
     print(f'{datetime.now()} converting dummies')
     df = convert_dummies(df, dummy_cols)

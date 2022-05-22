@@ -11,8 +11,6 @@ dummy_cols:
   - type
   - cluster
   - family
-  - weekday
-  - quarter
 
 x_cols:
   - onpromotion
@@ -81,14 +79,9 @@ x_cols:
   - family_PRODUCE
   - family_SCHOOL AND OFFICE SUPPLIES
   - family_SEAFOOD
-  - weekday_Friday
-  - weekday_Monday
-  - weekday_Saturday
-  - weekday_Sunday
-  - weekday_Thursday
-  - weekday_Tuesday
-  - weekday_Wednesday
-  - quarter_1
-  - quarter_2
-  - quarter_3
-  - quarter_4
+  - weekday_x
+  - weekday_y
+  - day_of_month_x
+  - day_of_month_y
+  - day_of_year_x
+  - day_of_year_y
