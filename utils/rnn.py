@@ -15,7 +15,9 @@ class Sales_RNN(nn.Module):
 
         self.flatten = nn.Flatten(0, -2)
 
-        self.fc = nn.Linear(hidden_dim, 1)
+        self.fc1 = nn.Linear(hidden_dim, 64)
+
+        self.fc2 = nn.Linear(64, 1)
 
     def forward(self, x, hidden):
         batch_size = x.size(0)
@@ -24,7 +26,8 @@ class Sales_RNN(nn.Module):
         r_out = self.dropout(r_out)
         r_out = self.flatten(r_out)
 
-        r_out = self.fc(r_out)
+        r_out = self.fc1(r_out)
+        r_out = self.fc2(r_out)
         output = r_out.reshape(batch_size, -1)
 
         return output, hidden
