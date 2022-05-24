@@ -37,6 +37,7 @@ X_cols = config['x_cols']
 dummy_cols = config['dummy_cols']
 hidden_dimensions = config['network_hyperparameters']['hidden_dimensions']
 n_layers = config['network_hyperparameters']['n_layers']
+additional_linear_layers = config['network_hyperparameters']['additional_linear_layers']
 batch_size = config['training_hyperparameters']['batch_size']
 num_epochs = config['training_hyperparameters']['num_epochs']
 lr = config['training_hyperparameters']['lr']
@@ -148,7 +149,9 @@ def test_training_function():
     validation_loader = DataLoader(
         validation_dataset, shuffle=True, batch_size=batch_size
     )
-    model = Sales_RNN(len(X_cols), hidden_dimensions, n_layers)
+    model = Sales_RNN(
+        len(X_cols), hidden_dimensions, n_layers, additional_linear_layers
+    )
     device = 'cuda'
     model.to(device)
     criterion = nn.MSELoss()
@@ -201,7 +204,9 @@ def test_model(model, sequences_X, sequences_index):
 
 if __name__ == '__main__':
     test_training_function()
-    model = Sales_RNN(len(X_cols), hidden_dimensions, n_layers)
+    model = Sales_RNN(
+        len(X_cols), hidden_dimensions, n_layers, additional_linear_layers
+    )
     state_dict = torch.load(os.path.join('var', 'model.pkl'))
     model.load_state_dict(state_dict)
     sequences_X, sequences_index = get_test_data()
