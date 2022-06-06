@@ -76,7 +76,7 @@ def train(
 ):
     start = datetime.now()
     print(f'Training started at {start}')
-    min_mse = np.inf
+    min_rmlse = np.inf
 
     for epoch in range(epochs):
 
@@ -119,17 +119,17 @@ def train(
             f'Epoch {epoch+1:2d}/{epochs:d} completion time: {datetime.now() - start}',
             end='\t',
         )
-        mse = cumulative_loss / denominator
-        print(f'Validation MSE: {mse}')
-        if mse < min_mse:
-            min_mse = mse
+        rmlse = cumulative_loss / denominator
+        print(f'Validation RMLSE: {rmlse}')
+        if rmlse < min_rmlse:
+            min_rmlse = rmlse
             if not os.path.exists('var'):
                 os.mkdir('var')
             torch.save(model.state_dict(), os.path.join('var', 'model.pkl'))
             print('Saved model artifacts')
 
     print(f'Training completion time: {datetime.now() - start}')
-    print(f'Lowest MSE: {min_mse}')
+    print(f'Lowest RMLSE: {min_rmlse}')
 
     return model
 
