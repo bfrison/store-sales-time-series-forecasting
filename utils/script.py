@@ -128,10 +128,13 @@ def train(
             torch.save(model.state_dict(), os.path.join('var', 'model.pkl'))
             print('Saved model artifacts')
 
-    print(f'Training completion time: {datetime.now() - start}')
+    completion_time = datetime.now() - start
+    with open(os.path.join('var', 'training_metrics.json'), 'w') as f:
+        json.dump({'RMLSE': min_rmlse, 'completion_time_seconds': completion_time.total_seconds()}, f)
+    print(f'Training completion time: {completion_time}')
     print(f'Lowest RMLSE: {min_rmlse}')
 
-    return model
+    return model, completion_time, min_rmlse
 
 
 def test_training_function():

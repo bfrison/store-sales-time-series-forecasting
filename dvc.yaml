@@ -1,0 +1,23 @@
+stages:
+  training:
+    cmd: python utils/script.py
+    deps:
+    - utils/script.py
+    - utils/utils.py
+    - var/holidays_events.csv
+    - var/oil.csv
+    - var/stores.csv
+    - var/train.csv
+    params:
+    - utils/config.yml:
+      - network_hyperparameters.hidden_dimensions
+      - network_hyperparameters.n_layers
+      - network_hyperparameters.additional_linear_layers
+      - training_hyperparameters.batch_size
+      - training_hyperparameters.num_epochs
+      - training_hyperparameters.lr
+    outs:
+    - var/model.pkl
+    - submission.csv
+    metrics:
+    - var/training_metrics.json
