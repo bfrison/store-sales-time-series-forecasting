@@ -210,7 +210,7 @@ if __name__ == '__main__':
     model = Sales_RNN(
         len(X_cols), hidden_dimensions, n_layers, additional_linear_layers
     )
-    state_dict = torch.load(os.path.join('var', 'model.pkl'))
+    state_dict = torch.load(os.path.join('var', 'model.pkl'), weights_only=True)
     model.load_state_dict(state_dict)
     sequences_X, sequences_index = get_test_data()
     preds = test_model(model, sequences_X, sequences_index)

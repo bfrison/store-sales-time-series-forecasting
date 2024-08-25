@@ -14,8 +14,8 @@ def load_data_frame(data_path, file_name='train.csv'):
     date_max = df_oil.index.max()
 
     df_oil = df_oil.reindex(pd.date_range(date_min, date_max))
-    df_oil.dcoilwtico.fillna(method='ffill', inplace=True)
-    df_oil.dcoilwtico.fillna(method='bfill', inplace=True)
+    df_oil.dcoilwtico = df_oil.dcoilwtico.ffill()
+    df_oil.dcoilwtico = df_oil.dcoilwtico.bfill()
 
     scaler = MinMaxScaler()
     df_oil.dcoilwtico = scaler.fit_transform(df_oil).reshape(-1)
