@@ -18,3 +18,5 @@ dependencies:
     - pyyaml==6.0.2
     - scikit-learn==1.5.1
     - torch==2.4.0
+variables:
+  DVC_PAGER: less -cSR
