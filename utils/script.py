@@ -206,12 +206,20 @@ def test_model(model, sequences_X, sequences_index):
 
 
 if __name__ == '__main__':
-    test_training_function()
-    model = Sales_RNN(
-        len(X_cols), hidden_dimensions, n_layers, additional_linear_layers
-    )
-    state_dict = torch.load(os.path.join('var', 'model.pkl'), weights_only=True)
-    model.load_state_dict(state_dict)
-    sequences_X, sequences_index = get_test_data()
-    preds = test_model(model, sequences_X, sequences_index)
-    preds.to_csv('submission.csv')
+    parser = ArgumentParser()
+    subparsers = parser.add_subparsers(dest='subparser_name')
+    subparsers.add_parser('train')
+    subparsers.add_parser('infer')
+    args = parser.parse_args()
+
+    if args.subparser_name == 'train':
+        test_training_function()
+    elif args.subparser_name == 'infer'
+        model = Sales_RNN(
+            len(X_cols), hidden_dimensions, n_layers, additional_linear_layers
+        )
+        state_dict = torch.load(os.path.join('var', 'model.pkl'), weights_only=True)
+        model.load_state_dict(state_dict)
+        sequences_X, sequences_index = get_test_data()
+        preds = test_model(model, sequences_X, sequences_index)
+        preds.to_csv('submission.csv')

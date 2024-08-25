@@ -1,6 +1,6 @@
 stages:
   training:
-    cmd: python utils/script.py
+    cmd: python utils/script.py train
     deps:
     - utils/script.py
     - utils/utils.py
@@ -18,6 +18,13 @@ stages:
       - training_hyperparameters.lr
     outs:
     - var/model.pkl
-    - submission.csv
     metrics:
     - var/training_metrics.json
+  inference:
+    cmd: python utils/script.py infer
+    deps:
+    - utils/script.py
+    - utils/utils.py
+    - var/model.pkl
+    outs:
+    - submission.csv
