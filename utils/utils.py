@@ -137,7 +137,7 @@ def convert_dummies(df, cols, reattach_family=True):
 
 
 def polar_to_rectangular(r, theta):
-    return r * (np.cos(theta), np.sin(theta))
+    return (r * np.cos(theta), r * np.sin(theta))
 
 
 def add_day_of_week(df, col_name='date'):

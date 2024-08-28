@@ -1,3 +1,5 @@
+from argparse import ArgumentParser
+import json
 import os
 import sys
 from datetime import datetime
@@ -214,7 +216,7 @@ if __name__ == '__main__':
 
     if args.subparser_name == 'train':
         test_training_function()
-    elif args.subparser_name == 'infer'
+    elif args.subparser_name == 'infer':
         model = Sales_RNN(
             len(X_cols), hidden_dimensions, n_layers, additional_linear_layers
         )
