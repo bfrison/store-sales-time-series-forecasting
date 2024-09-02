@@ -145,20 +145,22 @@ def add_day_of_week(df, col_name='date'):
     weekday_x, weekday_y = polar_to_rectangular(
         1, df[col_name].dt.day_of_week / 7 * 2 * np.pi
     )
-    df['weekday_x'] = weekday_x.convert_dtypes()
-    df['weekday_y'] = weekday_y.convert_dtypes()
+    df_weekdays = df.copy()
+    df_weekdays['weekday_x'] = weekday_x.convert_dtypes()
+    df_weekdays['weekday_y'] = weekday_y.convert_dtypes()
 
-    return df
+    return df_weekdays
 
 
 def add_day_of_month(df, col_name='date'):
     day_of_month_x, day_of_month_y = polar_to_rectangular(
         1, df[col_name].dt.day / df[col_name].dt.days_in_month * 2 * np.pi
     )
-    df['day_of_month_x'] = day_of_month_x.convert_dtypes()
-    df['day_of_month_y'] = day_of_month_y.convert_dtypes()
+    df_days_of_month = df.copy()
+    df_days_of_month['day_of_month_x'] = day_of_month_x.convert_dtypes()
+    df_days_of_month['day_of_month_y'] = day_of_month_y.convert_dtypes()
 
-    return df
+    return df_days_of_month
 
 
 def add_day_of_year(df, col_name='date'):
@@ -166,7 +168,8 @@ def add_day_of_year(df, col_name='date'):
         1,
         df[col_name].dt.day_of_year / (365 + df[col_name].dt.is_leap_year) * 2 * np.pi,
     )
-    df['day_of_year_x'] = day_of_year_x.convert_dtypes()
-    df['day_of_year_y'] = day_of_year_y.convert_dtypes()
+    df_days_of_year = df.copy()
+    df_days_of_year['day_of_year_x'] = day_of_year_x.convert_dtypes()
+    df_days_of_year['day_of_year_y'] = day_of_year_y.convert_dtypes()
 
-    return df
+    return df_days_of_year

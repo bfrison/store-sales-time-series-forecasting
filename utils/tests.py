@@ -50,6 +50,25 @@ def test_load_data_frame(joined_df):
     assert joined_df.notna().all().all(), 'DataFrame has null entries'
 
 
+def test_add_day_of_week(joined_df):
+    df_weekdays = add_day_of_week(joined_df)
+    assert np.isclose(df_weekdays.weekday_x**2 + df_weekdays.weekday_y**2, 1).all()
+
+
+def test_add_day_of_month(joined_df):
+    df_days_of_month = add_day_of_month(joined_df)
+    assert np.isclose(
+        df_days_of_month.day_of_month_x**2 + df_days_of_month.day_of_month_y**2, 1
+    ).all()
+
+
+def test_add_day_of_year(joined_df):
+    df_days_of_year = add_day_of_year(joined_df)
+    assert np.isclose(
+        df_days_of_year.day_of_year_x**2 + df_days_of_year.day_of_year_y**2, 1
+    ).all()
+
+
 def test_pre_processing(preprocessed_df, config):
     assert isinstance(
         preprocessed_df, pd.DataFrame
