@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 import pytest
 import yaml
+from pandas.core.arrays.boolean import BooleanDtype
+from pandas.core.arrays.numeric import NumericDtype
 
 from utils import (
     add_day_of_month,
@@ -55,7 +57,10 @@ def test_pre_processing(preprocessed_df, config):
     assert preprocessed_df.index.is_unique, 'Index is not unique'
     assert preprocessed_df.shape[1] == 78, 'DataFrame does not have 78 columns'
     assert preprocessed_df.notna().all().all(), 'DataFrame has null entries'
-    assert False, f'{set(preprocessed_df[config["x_cols"]].dtypes)}'
+    for col, dtype in preprocessed_df[config['x_cols']].dtypes.items():
+        assert isinstance(
+            dtype, (BooleanDtype, NumericDtype)
+        ), f'{col} is not a numeric type'
 
 
 def test_polar_to_rectangular():

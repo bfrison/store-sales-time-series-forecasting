@@ -19,6 +19,7 @@ def load_data_frame(data_path, file_name='train.csv'):
 
     scaler = MinMaxScaler()
     df_oil.dcoilwtico = scaler.fit_transform(df_oil).reshape(-1)
+    df_oil.dcoilwtico = df_oil.dcoilwtico.convert_dtypes()
 
     df_holiday_events = pd.read_csv(
         join(data_path, 'holidays_events.csv'), parse_dates=['date']
@@ -144,8 +145,8 @@ def add_day_of_week(df, col_name='date'):
     weekday_x, weekday_y = polar_to_rectangular(
         1, df[col_name].dt.day_of_week / 7 * 2 * np.pi
     )
-    df['weekday_x'] = weekday_x
-    df['weekday_y'] = weekday_y
+    df['weekday_x'] = weekday_x.convert_dtypes()
+    df['weekday_y'] = weekday_y.convert_dtypes()
 
     return df
 
@@ -154,8 +155,8 @@ def add_day_of_month(df, col_name='date'):
     day_of_month_x, day_of_month_y = polar_to_rectangular(
         1, df[col_name].dt.day / df[col_name].dt.days_in_month * 2 * np.pi
     )
-    df['day_of_month_x'] = day_of_month_x
-    df['day_of_month_y'] = day_of_month_y
+    df['day_of_month_x'] = day_of_month_x.convert_dtypes()
+    df['day_of_month_y'] = day_of_month_y.convert_dtypes()
 
     return df
 
@@ -165,7 +166,7 @@ def add_day_of_year(df, col_name='date'):
         1,
         df[col_name].dt.day_of_year / (365 + df[col_name].dt.is_leap_year) * 2 * np.pi,
     )
-    df['day_of_year_x'] = day_of_year_x
-    df['day_of_year_y'] = day_of_year_y
+    df['day_of_year_x'] = day_of_year_x.convert_dtypes()
+    df['day_of_year_y'] = day_of_year_y.convert_dtypes()
 
     return df
