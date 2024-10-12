@@ -120,7 +120,7 @@ def sequences_generator(df, sequence_length, X_cols, y_col=None):
                 else:
                     sequences_y.append(df_store.iloc[index_range].index.astype('int'))
 
-    return np.array(sequences_X), np.array(sequences_y)
+    return sequences_X, sequences_y
 
 
 def convert_dummies(df, cols, reattach_family=True):

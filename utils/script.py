@@ -142,12 +142,12 @@ def train(
 def test_training_function():
     train_X, val_X, train_y, val_y = get_data()
     train_dataset = TensorDataset(
-        torch.from_numpy(train_X.astype('float32')),
-        torch.from_numpy(train_y.astype('float32')),
+        torch.from_numpy(np.array(train_X).astype('float32')),
+        torch.from_numpy(np.array(train_y).astype('float32')),
     )
     validation_dataset = TensorDataset(
-        torch.from_numpy(val_X.astype('float32')),
-        torch.from_numpy(val_y.astype('float32')),
+        torch.from_numpy(np.array(val_X).astype('float32')),
+        torch.from_numpy(np.array(val_y).astype('float32')),
     )
     # print(f'Dataset length: {len(train_dataset):d}')
     train_loader = DataLoader(train_dataset, shuffle=True, batch_size=batch_size)
@@ -193,10 +193,10 @@ def get_test_data():
 def test_model(model, sequences_X, sequences_index):
     model.eval()
     sequences_y_log, hidden = model(
-        torch.from_numpy(sequences_X.astype('float32')), None
+        torch.from_numpy(np.array(sequences_X).astype('float32')), None
     )
     sequences_y = np.exp(sequences_y_log.detach().numpy()) - 1
-    index = sequences_index.reshape(-1)
+    index = np.array(sequences_index).reshape(-1)
     preds = (
         pd.Series(sequences_y.reshape(-1))
         .set_axis(index)
