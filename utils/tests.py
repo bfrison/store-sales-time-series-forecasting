@@ -14,6 +14,7 @@ from utils import (
     convert_dummies,
     load_data_frame,
     polar_to_rectangular,
+    sequences_generator,
 )
 
 
@@ -39,6 +40,13 @@ def preprocessed_df(joined_df, config):
     joined_df = convert_dummies(joined_df, config['dummy_cols'])
 
     return joined_df
+
+
+@pytest.fixture
+def generated_sequences(preprocessed_df, config):
+    sequences = sequences_generator(preprocessed_df, 1684, config['x_cols'], 'sales')
+
+    return sequences
 
 
 def test_load_data_frame(joined_df):
@@ -80,6 +88,15 @@ def test_pre_processing(preprocessed_df, config):
         assert isinstance(
             dtype, (BooleanDtype, NumericDtype)
         ), f'{col} is not a numeric type'
+
+
+def test_sequences_generator(generated_sequences):
+    sequences_X, sequences_y = generated_sequences
+    assert isinstance(sequences_X, list), 'sequences_X is not a list'
+    assert isinstance(sequences_y, list), 'sequences_y is not a list'
+    assert len(sequences_X) == 1782, 'sequences_X is not 1782 terms long'
+    assert len(sequences_y) == 1782, 'sequences_y is not 1782 terms long'
+    assert isinstance(sequences_X[0], pd.DataFrame), 'Generated sequences are not DataFrames'
 
 
 def test_polar_to_rectangular():
