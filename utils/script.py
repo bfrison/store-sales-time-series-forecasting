@@ -1,8 +1,9 @@
-from argparse import ArgumentParser
 import json
 import os
 import sys
+from argparse import ArgumentParser
 from datetime import datetime
+from itertools import chain
 
 utils_dir = '/kaggle/input/store-sales-time-series-forecasting-utils'
 dataset_dir = '/kaggle/input/store-sales-time-series-forecasting'
@@ -142,12 +143,12 @@ def train(
 def test_training_function():
     train_X, val_X, train_y, val_y = get_data()
     train_dataset = TensorDataset(
-        torch.from_numpy(np.array(train_X).astype('float32')),
-        torch.from_numpy(np.array(train_y).astype('float32')),
+        torch.from_numpy(np.array(list(val.to_numpy('float32') for val in train_X))),
+        torch.from_numpy(np.array(list(val.to_numpy('float32') for val in train_y))),
     )
     validation_dataset = TensorDataset(
-        torch.from_numpy(np.array(val_X).astype('float32')),
-        torch.from_numpy(np.array(val_y).astype('float32')),
+        torch.from_numpy(np.array(list(val.to_numpy('float32') for val in val_X))),
+        torch.from_numpy(np.array(list(val.to_numpy('float32') for val in val_y))),
     )
     # print(f'Dataset length: {len(train_dataset):d}')
     train_loader = DataLoader(train_dataset, shuffle=True, batch_size=batch_size)
@@ -193,10 +194,10 @@ def get_test_data():
 def test_model(model, sequences_X, sequences_index):
     model.eval()
     sequences_y_log, hidden = model(
-        torch.from_numpy(np.array(sequences_X).astype('float32')), None
+        torch.from_numpy(np.array(list(val.to_numpy('float32') for val in sequences_X))), None
     )
     sequences_y = np.exp(sequences_y_log.detach().numpy()) - 1
-    index = np.array(sequences_index).reshape(-1)
+    index = np.array([*chain.from_iterable(sequences_index)])
     preds = (
         pd.Series(sequences_y.reshape(-1))
         .set_axis(index)

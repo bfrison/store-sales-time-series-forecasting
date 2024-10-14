@@ -92,11 +92,12 @@ def test_pre_processing(preprocessed_df, config):
 
 def test_sequences_generator(generated_sequences):
     sequences_X, sequences_y = generated_sequences
-    assert isinstance(sequences_X, list), 'sequences_X is not a list'
-    assert isinstance(sequences_y, list), 'sequences_y is not a list'
+    assert isinstance(sequences_X, pd.Series), 'sequences_X is not a Pandas Series'
+    assert isinstance(sequences_y, pd.Series), 'sequences_y is not a Pandas Series'
     assert len(sequences_X) == 1782, 'sequences_X is not 1782 terms long'
     assert len(sequences_y) == 1782, 'sequences_y is not 1782 terms long'
-    assert isinstance(sequences_X[0], pd.DataFrame), 'Generated sequences are not DataFrames'
+    assert all(isinstance(val, pd.DataFrame) for val in sequences_X), 'Generated sequences are not DataFrames'
+    assert all(isinstance(val, pd.Series) for val in sequences_y), 'Generated sequences are not Series'
 
 
 def test_polar_to_rectangular():
