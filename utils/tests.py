@@ -90,14 +90,18 @@ def test_pre_processing(preprocessed_df, config):
         ), f'{col} is not a numeric type'
 
 
-def test_sequences_generator(generated_sequences):
+def test_sequences_generator(joined_df, generated_sequences):
     sequences_X, sequences_y = generated_sequences
     assert isinstance(sequences_X, pd.Series), 'sequences_X is not a Pandas Series'
     assert isinstance(sequences_y, pd.Series), 'sequences_y is not a Pandas Series'
-    assert len(sequences_X) == 1782, 'sequences_X is not 1782 terms long'
-    assert len(sequences_y) == 1782, 'sequences_y is not 1782 terms long'
     assert all(isinstance(val, pd.DataFrame) for val in sequences_X), 'Generated sequences are not DataFrames'
     assert all(isinstance(val, pd.Series) for val in sequences_y), 'Generated sequences are not Series'
+    assert set(sequences_X.index.get_level_values(0)) == set(joined_df.family), 'Generated sequences index does not correspond to the family column'
+    assert set(sequences_X.index.get_level_values(1)) == set(joined_df.store_nbr), 'Generated sequences index does not correspond to the store_nbr column'
+    assert set(sequences_y.index.get_level_values(0)) == set(joined_df.family), 'Generated sequences index does not correspond to the family column'
+    assert set(sequences_y.index.get_level_values(1)) == set(joined_df.store_nbr), 'Generated sequences index does not correspond to the store_nbr column'
+    assert all(len(df) == joined_df.date.nunique() for df in sequences_X), 'Length of generated sequences does not match number of dates'
+    assert all(len(ser) == joined_df.date.nunique() for ser in sequences_y), 'Length of generated sequences does not match number of dates'
 
 
 def test_polar_to_rectangular():
