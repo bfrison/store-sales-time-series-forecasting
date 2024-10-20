@@ -4,6 +4,8 @@
 /test.csv
 /train.csv
 /transactions.csv
-/sample_submission.csv
+
+/epochs.csv
 /model.pkl
+/sample_submission.csv
 /training_metrics.json

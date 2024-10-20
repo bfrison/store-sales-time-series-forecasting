@@ -20,6 +20,8 @@ stages:
     - var/model.pkl
     metrics:
     - var/training_metrics.json
+    plots:
+    - var/epochs.csv
   inference:
     cmd: python utils/script.py infer
     deps:

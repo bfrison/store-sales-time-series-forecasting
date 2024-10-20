@@ -2,7 +2,7 @@ import json
 import os
 import sys
 from argparse import ArgumentParser
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import chain
 
 utils_dir = '/kaggle/input/store-sales-time-series-forecasting-utils'
@@ -80,6 +80,9 @@ def train(
     start = datetime.now()
     print(f'Training started at {start}')
     min_rmlse = np.inf
+    time_to_convergence = timedelta(0)
+    epochs_to_convergence = 0
+    epochs_list = []
 
     for epoch in range(epochs):
 
@@ -118,14 +121,18 @@ def train(
 
             cumulative_loss += loss.item() * len(batch_y)
 
+        elapsed_time = datetime.now() - start
         print(
-            f'Epoch {epoch+1:2d}/{epochs:d} completion time: {datetime.now() - start}',
+            f'Epoch {epoch+1:2d}/{epochs:d} completion time: {elapsed_time}',
             end='\t',
         )
         rmlse = cumulative_loss / denominator
+        epochs_list.append({'epoch': epoch + 1, 'elapsed_time_seconds': elapsed_time.total_seconds(), 'RMSLE': rmlse})
         print(f'Validation RMLSE: {rmlse}')
         if rmlse < min_rmlse:
             min_rmlse = rmlse
+            time_to_convergence = datetime.now() - start
+            epochs_to_convergence = epoch + 1
             if not os.path.exists('var'):
                 os.mkdir('var')
             torch.save(model.state_dict(), os.path.join('var', 'model.pkl'))
@@ -133,7 +140,14 @@ def train(
 
     completion_time = datetime.now() - start
     with open(os.path.join('var', 'training_metrics.json'), 'w') as f:
-        json.dump({'RMLSE': min_rmlse, 'completion_time_seconds': completion_time.total_seconds()}, f)
+        json.dump({
+            'RMLSE': min_rmlse,
+            'time_to_convergence_seconds': time_to_convergence.total_seconds(),
+            'epochs_to_convergence': epochs_to_convergence,
+            'completion_time_seconds': completion_time.total_seconds(),
+        }, f)
+    df_epochs = pd.DataFrame(epochs_list).set_index('epoch').convert_dtypes()
+    df_epochs.to_csv(os.path.join('var', 'epochs.csv'))
     print(f'Training completion time: {completion_time}')
     print(f'Lowest RMLSE: {min_rmlse}')
 
