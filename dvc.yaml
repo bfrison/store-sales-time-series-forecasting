@@ -13,6 +13,7 @@ stages:
       - network_hyperparameters.hidden_dimensions
       - network_hyperparameters.n_layers
       - network_hyperparameters.additional_linear_layers
+      - network_hyperparameters.dropout_rate
       - training_hyperparameters.batch_size
       - training_hyperparameters.num_epochs
       - training_hyperparameters.lr

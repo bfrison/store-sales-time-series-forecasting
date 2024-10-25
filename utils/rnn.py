@@ -2,7 +2,7 @@ import torch.nn as nn
 
 
 class Sales_RNN(nn.Module):
-    def __init__(self, input_size, hidden_dim, n_layers, additional_linear_layers):
+    def __init__(self, input_size, hidden_dim, n_layers, additional_linear_layers, dropout_rate):
         super(Sales_RNN, self).__init__()
 
         self.input_size = input_size
@@ -12,7 +12,7 @@ class Sales_RNN(nn.Module):
 
         self.rnn = nn.RNN(input_size, hidden_dim, n_layers, batch_first=True)
 
-        self.dropout = nn.Dropout(0.2)
+        self.dropout = nn.Dropout(dropout_rate)
 
         self.flatten = nn.Flatten(0, -2)
 

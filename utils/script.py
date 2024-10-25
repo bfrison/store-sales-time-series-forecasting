@@ -41,6 +41,7 @@ dummy_cols = config['dummy_cols']
 hidden_dimensions = config['network_hyperparameters']['hidden_dimensions']
 n_layers = config['network_hyperparameters']['n_layers']
 additional_linear_layers = config['network_hyperparameters']['additional_linear_layers']
+dropout_rate = config['network_hyperparameters']['dropout_rate']
 batch_size = config['training_hyperparameters']['batch_size']
 num_epochs = config['training_hyperparameters']['num_epochs']
 lr = config['training_hyperparameters']['lr']
@@ -170,7 +171,7 @@ def test_training_function():
         validation_dataset, shuffle=True, batch_size=batch_size
     )
     model = Sales_RNN(
-        len(X_cols), hidden_dimensions, n_layers, additional_linear_layers
+        len(X_cols), hidden_dimensions, n_layers, additional_linear_layers, dropout_rate
     )
     device = 'cuda'
     model.to(device)
@@ -233,7 +234,7 @@ if __name__ == '__main__':
         test_training_function()
     elif args.subparser_name == 'infer':
         model = Sales_RNN(
-            len(X_cols), hidden_dimensions, n_layers, additional_linear_layers
+            len(X_cols), hidden_dimensions, n_layers, additional_linear_layers, dropout_rate
         )
         state_dict = torch.load(os.path.join('var', 'model.pkl'), weights_only=True)
         model.load_state_dict(state_dict)
