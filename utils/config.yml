@@ -1,12 +1,11 @@
 network_hyperparameters:
-  hidden_dimensions: 256
-  n_layers: 2
-  additional_linear_layers: [64, 16, 4]
-  dropout_rate: 0.2
-
+  hidden_dimensions: 128
+  n_layers: 3
+  additional_linear_layers: [4]
+  dropout_rate: 0.3
 training_hyperparameters:
-  batch_size: 8
-  num_epochs: 120
+  batch_size: 4
+  num_epochs: 128
   lr: 0.0003
 
 dummy_cols:

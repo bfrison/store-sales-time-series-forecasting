@@ -1,7 +1,6 @@
 import json
 import os
 import sys
-from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from itertools import chain
 
@@ -224,20 +223,12 @@ def test_model(model, sequences_X, sequences_index):
 
 
 if __name__ == '__main__':
-    parser = ArgumentParser()
-    subparsers = parser.add_subparsers(dest='subparser_name')
-    subparsers.add_parser('train')
-    subparsers.add_parser('infer')
-    args = parser.parse_args()
-
-    if args.subparser_name == 'train':
-        test_training_function()
-    elif args.subparser_name == 'infer':
-        model = Sales_RNN(
-            len(X_cols), hidden_dimensions, n_layers, additional_linear_layers, dropout_rate
-        )
-        state_dict = torch.load(os.path.join('var', 'model.pkl'), weights_only=True)
-        model.load_state_dict(state_dict)
-        sequences_X, sequences_index = get_test_data()
-        preds = test_model(model, sequences_X, sequences_index)
-        preds.to_csv('submission.csv')
+    test_training_function()
+    model = Sales_RNN(
+        len(X_cols), hidden_dimensions, n_layers, additional_linear_layers, dropout_rate
+    )
+    state_dict = torch.load(os.path.join('var', 'model.pkl'), weights_only=True)
+    model.load_state_dict(state_dict)
+    sequences_X, sequences_index = get_test_data()
+    preds = test_model(model, sequences_X, sequences_index)
+    preds.to_csv('submission.csv')

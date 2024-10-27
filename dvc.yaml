@@ -1,8 +1,8 @@
 stages:
   training:
-    cmd: python utils/script.py train
+    cmd: python script.py train
     deps:
-    - utils/script.py
+    - script.py
     - utils/utils.py
     - var/holidays_events.csv
     - var/oil.csv
@@ -24,9 +24,9 @@ stages:
     plots:
     - var/epochs.csv
   inference:
-    cmd: python utils/script.py infer
+    cmd: python script.py infer
     deps:
-    - utils/script.py
+    - script.py
     - utils/utils.py
     - var/model.pkl
     outs:
