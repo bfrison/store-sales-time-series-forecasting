@@ -102,34 +102,6 @@ def load_data_frame(data_path, file_name='train.csv'):
     return df_train
 
 
-def sequences_generator(df, sequence_length, X_cols, y_col=None):
-    num_dates = df.date.nunique()
-    sequences_X = {}
-    sequences_y = {}
-    for family in df.family.unique():
-        df_family = df.query(f'family == @family', engine='python')
-        for i in df_family.store_nbr.unique():
-            df_store = df_family.query('store_nbr == @i', engine='python')
-            for j in range(int(num_dates / sequence_length)):
-                index_range = slice(j * sequence_length, (j + 1) * sequence_length)
-                sequences_X.update([(
-                    (family, i),
-                    df_store[X_cols].iloc[index_range].astype('float'),
-                )])
-                if y_col:
-                    sequences_y.update([(
-                        (family, i),
-                        df_store[y_col].iloc[index_range].astype('float'),
-                    )])
-                else:
-                    sequences_y.update([(
-                        (family, i),
-                        df_store.iloc[index_range].index.astype('int'),
-                    )])
-
-    return pd.Series(sequences_X), pd.Series(sequences_y)
-
-
 def convert_dummies(df, cols, reattach_family=True):
     df_dummies_list = []
     for col in cols:
