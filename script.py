@@ -6,12 +6,8 @@ from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from itertools import chain
 
-utils_dir = '/kaggle/input/store-sales-time-series-forecasting-utils'
-dataset_dir = '/kaggle/input/store-sales-time-series-forecasting'
-
-from conda.cli import main
-
-main('conda', 'install', '-y',  'pandas=1.3.5', '-c', 'conda-forge')
+utils_dir = 'utils'
+dataset_dir = 'var'
 
 import numpy as np
 import pandas as pd
