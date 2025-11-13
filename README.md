@@ -14,3 +14,9 @@ The metrics and parameters of completed experiments can be viewed in the `less` 
 ```bash
 dvc experiments show
 ```
+## Unit tests
+The unit tests are in `utils/tests.py`.  
+They can be run by executing
+```bash
+pytest -v utils/tests.py
+```
