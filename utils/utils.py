@@ -1,11 +1,12 @@
 from os.path import join
+from typing import Any, Dict, List, Tuple, Union
 
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
 
-def load_data_frame(data_path, file_name='train.csv'):
+def load_data_frame(data_path: str, file_name: str = 'train.csv') -> pd.DataFrame:
     df_oil = pd.read_csv(
         join(data_path, 'oil.csv'), index_col=0, parse_dates=['date']
     ).convert_dtypes()
@@ -102,7 +103,9 @@ def load_data_frame(data_path, file_name='train.csv'):
     return df_train
 
 
-def convert_dummies(df, cols, reattach_family=True):
+def convert_dummies(
+    df: pd.DataFrame, cols: List[str], reattach_family: bool = True
+) -> pd.DataFrame:
     df_dummies_list = []
     for col in cols:
         df_dummies_list.append(pd.get_dummies(df[col], prefix=col).convert_dtypes())
@@ -116,11 +119,13 @@ def convert_dummies(df, cols, reattach_family=True):
         return pd.concat([df.drop(columns=cols)] + df_dummies_list, axis=1)
 
 
-def polar_to_rectangular(r, theta):
+def polar_to_rectangular(
+    r: float, theta: Union[float, np.ndarray, pd.Series]
+) -> Tuple[Union[float, np.ndarray], Union[float, np.ndarray]]:
     return (r * np.cos(theta), r * np.sin(theta))
 
 
-def add_day_of_week(df, col_name='date'):
+def add_day_of_week(df: pd.DataFrame, col_name: str = 'date') -> pd.DataFrame:
     weekday_x, weekday_y = polar_to_rectangular(
         1, df[col_name].dt.day_of_week / 7 * 2 * np.pi
     )
@@ -131,7 +136,7 @@ def add_day_of_week(df, col_name='date'):
     return df_weekdays
 
 
-def add_day_of_month(df, col_name='date'):
+def add_day_of_month(df: pd.DataFrame, col_name: str = 'date') -> pd.DataFrame:
     day_of_month_x, day_of_month_y = polar_to_rectangular(
         1, df[col_name].dt.day / df[col_name].dt.days_in_month * 2 * np.pi
     )
@@ -142,7 +147,7 @@ def add_day_of_month(df, col_name='date'):
     return df_days_of_month
 
 
-def add_day_of_year(df, col_name='date'):
+def add_day_of_year(df: pd.DataFrame, col_name: str = 'date') -> pd.DataFrame:
     day_of_year_x, day_of_year_y = polar_to_rectangular(
         1,
         df[col_name].dt.day_of_year / (365 + df[col_name].dt.is_leap_year) * 2 * np.pi,

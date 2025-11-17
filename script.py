@@ -1,4 +1,3 @@
-import joblib
 import json
 import os
 import sys
@@ -6,8 +5,12 @@ from argparse import ArgumentParser
 from datetime import datetime, timedelta
 from itertools import chain
 
+import joblib
+
 utils_dir = 'utils'
 dataset_dir = 'var'
+
+from typing import Tuple
 
 import numpy as np
 import pandas as pd
@@ -35,7 +38,7 @@ dummy_cols = config['dummy_cols']
 random_forest_parameters = config['random_forest_parameters']
 
 
-def get_data():
+def get_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     print(f'{datetime.now()} loading training dataframe')
     df = load_data_frame(dataset_dir)
     df = add_day_of_week(df)
@@ -53,7 +56,7 @@ def get_data():
     return train_X, val_X, train_y, val_y
 
 
-def test_training_function():
+def train() -> RandomForestRegressor:
     train_X, val_X, train_y, val_y = get_data()
     start = datetime.now()
 
@@ -79,7 +82,7 @@ def test_training_function():
     return model
 
 
-def get_test_data():
+def get_test_data() -> pd.DataFrame:
     print(f'{datetime.now()} loading test dataframe')
     df = load_data_frame(dataset_dir, 'test.csv')
     df = add_day_of_week(df)
@@ -92,7 +95,7 @@ def get_test_data():
     return df[X_cols]
 
 
-def test_model(model, df_X):
+def test_model(model: RandomForestRegressor, df_X: pd.DataFrame) -> np.ndarray:
     preds = model.predict(df_X)
     return preds
 
@@ -105,7 +108,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.subparser_name == 'train':
-        test_training_function()
+        train()
         print('Training completed!')
     elif args.subparser_name == 'infer':
         with open(os.path.join('var', 'model.pkl'), 'rb') as f:
